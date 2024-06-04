@@ -3,14 +3,18 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using DormPuzzle.Controls.Blocks;
 using DormPuzzle.Models;
+using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
 namespace DormPuzzle;
 
-public partial class MainWindow : Window
+public partial class MainWindow : FluentWindow
 {
     public MainWindow()
     {
         InitializeComponent();
+
+        SystemThemeWatcher.Watch(this);
     }
 
     private void BlockThumb_DragCompleted(object sender, DragCompletedEventArgs e)
