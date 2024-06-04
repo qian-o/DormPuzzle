@@ -15,11 +15,6 @@
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
-        <Canvas x:Name="DropCanvas"
-                Grid.ColumnSpan="2"
-                IsHitTestVisible="False"
-                d:Visibility="Collapsed" />
-
         <UniformGrid Grid.Column="0"
                      Columns="2"
                      Rows="4">
@@ -131,5 +126,10 @@
                                    Margin="0,10,0,0"
                                    MouseUp="BlockContainer_MouseUp" />
         </DockPanel>
+
+        <Canvas x:Name="DropCanvas"
+                Grid.ColumnSpan="2"
+                IsHitTestVisible="False"
+                d:Visibility="Collapsed" />
     </Grid>
 </Window>
