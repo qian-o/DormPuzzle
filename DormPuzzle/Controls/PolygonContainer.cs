@@ -188,7 +188,7 @@ public class PolygonContainer : Control
             }
         }
 
-        // Draw the border of the container
+        // Draw the outer border
         {
             PathGeometry geometryLeft = new();
             PathGeometry geometryTop = new();
@@ -257,6 +257,87 @@ public class PolygonContainer : Control
 
             drawingContext.DrawGeometry(null,
                                         new Pen(BorderBrush, BorderThickness.Bottom)
+                                        {
+                                            StartLineCap = PenLineCap.Round,
+                                            EndLineCap = PenLineCap.Round
+                                        },
+                                        geometryBottom);
+        }
+
+        // Draw the inner border
+        {
+            Brush? controlStrongStrokeColorDefaultBrush = ResourceHelper.GetResource<Brush>("ControlStrongStrokeColorDefaultBrush");
+
+            double innerLeftRightMargin = cellWidth / 8.0;
+            double innerTopBottomMargin = cellHeight / 8.0;
+
+            PathGeometry geometryLeft = new();
+            PathGeometry geometryTop = new();
+            PathGeometry geometryRight = new();
+            PathGeometry geometryBottom = new();
+
+            for (int i = 0; i < Columns; i++)
+            {
+                for (int j = 0; j < Rows; j++)
+                {
+                    foreach (Polygon child in Children)
+                    {
+                        if (child.Column == i && child.Row == j)
+                        {
+                            if (IsOnBoundary(child, Direction.Left))
+                            {
+                                geometryLeft.AddGeometry(new LineGeometry(new Point(i * cellWidth + innerLeftRightMargin, j * cellHeight + innerTopBottomMargin),
+                                                                          new Point(i * cellWidth + innerLeftRightMargin, (j + 1) * cellHeight - innerTopBottomMargin)));
+                            }
+
+                            if (IsOnBoundary(child, Direction.Top))
+                            {
+                                geometryTop.AddGeometry(new LineGeometry(new Point(i * cellWidth + innerLeftRightMargin, j * cellHeight + innerTopBottomMargin),
+                                                                         new Point((i + 1) * cellWidth - innerLeftRightMargin, j * cellHeight + innerTopBottomMargin)));
+                            }
+
+                            if (IsOnBoundary(child, Direction.Right))
+                            {
+                                geometryRight.AddGeometry(new LineGeometry(new Point((i + 1) * cellWidth - innerLeftRightMargin, j * cellHeight + innerTopBottomMargin),
+                                                                           new Point((i + 1) * cellWidth - innerLeftRightMargin, (j + 1) * cellHeight - innerTopBottomMargin)));
+                            }
+
+                            if (IsOnBoundary(child, Direction.Bottom))
+                            {
+                                geometryBottom.AddGeometry(new LineGeometry(new Point(i * cellWidth + innerLeftRightMargin, (j + 1) * cellHeight - innerTopBottomMargin),
+                                                                            new Point((i + 1) * cellWidth - innerLeftRightMargin, (j + 1) * cellHeight - innerTopBottomMargin)));
+                            }
+                        }
+                    }
+                }
+            }
+
+            drawingContext.DrawGeometry(null,
+                                        new Pen(controlStrongStrokeColorDefaultBrush, BorderThickness.Left)
+                                        {
+                                            StartLineCap = PenLineCap.Round,
+                                            EndLineCap = PenLineCap.Round
+                                        },
+                                        geometryLeft);
+
+            drawingContext.DrawGeometry(null,
+                                        new Pen(controlStrongStrokeColorDefaultBrush, BorderThickness.Top)
+                                        {
+                                            StartLineCap = PenLineCap.Round,
+                                            EndLineCap = PenLineCap.Round
+                                        },
+                                        geometryTop);
+
+            drawingContext.DrawGeometry(null,
+                                        new Pen(controlStrongStrokeColorDefaultBrush, BorderThickness.Right)
+                                        {
+                                            StartLineCap = PenLineCap.Round,
+                                            EndLineCap = PenLineCap.Round
+                                        },
+                                        geometryRight);
+
+            drawingContext.DrawGeometry(null,
+                                        new Pen(controlStrongStrokeColorDefaultBrush, BorderThickness.Bottom)
                                         {
                                             StartLineCap = PenLineCap.Round,
                                             EndLineCap = PenLineCap.Round
