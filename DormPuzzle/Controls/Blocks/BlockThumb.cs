@@ -42,6 +42,7 @@ public class BlockThumb : Thumb
 
     public BlockThumb()
     {
+        MouseDoubleClick += BlockThumb_MouseDoubleClick;
         DragStarted += BlockThumb_DragStarted;
         DragDelta += BlockThumb_DragDelta;
         DragCompleted += BlockThumb_DragCompleted;
@@ -69,6 +70,11 @@ public class BlockThumb : Thumb
     {
         get => (Canvas)GetValue(CanvasProperty);
         set => SetValue(CanvasProperty, value);
+    }
+
+    private void BlockThumb_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        Block?.Rotate();
     }
 
     private void BlockThumb_DragStarted(object sender, DragStartedEventArgs e)

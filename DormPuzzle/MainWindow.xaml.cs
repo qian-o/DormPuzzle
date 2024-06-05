@@ -15,12 +15,20 @@ public partial class MainWindow : FluentWindow
         InitializeComponent();
 
         SystemThemeWatcher.Watch(this);
+
+        Blocks.ItemsSource = typeof(Block).Assembly.GetTypes()
+                                                   .Where(type => type.IsSubclassOf(typeof(Block)))
+                                                   .Select(Activator.CreateInstance)
+                                                   .OrderBy(block => ((Block)block!).Order)
+                                                   .ToArray();
     }
 
     private void BlockThumb_DragCompleted(object sender, DragCompletedEventArgs e)
     {
         if (((BlockThumb)sender).Block is Block block)
         {
+            block = (Block)block.Clone();
+
             Location location = BlockContainer.PointToLocation(Mouse.GetPosition(BlockContainer));
             location -= block.StartLocation;
 

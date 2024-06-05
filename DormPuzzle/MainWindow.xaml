@@ -13,12 +13,18 @@
                  WindowBackdropType="Mica"
                  WindowCornerPreference="Round"
                  WindowStartupLocation="CenterScreen">
+    <ui:FluentWindow.Resources>
+        <ContentControl x:Key="Drop"
+                        Tag="{Binding ElementName=DropCanvas}" />
+    </ui:FluentWindow.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
+        <ContentControl Content="{StaticResource Drop}" />
 
         <ui:TitleBar Title="Dorm Puzzle" />
 
@@ -29,58 +35,29 @@
                 <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
 
-            <UniformGrid Grid.Column="0"
-                         Columns="2"
-                         Rows="4">
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B2x2 />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B4x1 />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B2x3dL />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B2x3dR />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B3x2dL />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B3x2dR />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B2x3 />
-                </blocks:BlockThumb>
-                <blocks:BlockThumb Margin="4"
-                                   Title="1"
-                                   Canvas="{Binding ElementName=DropCanvas}"
-                                   DragCompleted="BlockThumb_DragCompleted">
-                    <blocks:B3x3 />
-                </blocks:BlockThumb>
-            </UniformGrid>
+            <DockPanel Grid.Column="0">
+                <TextBlock Margin="10,0,0,0"
+                           Text="双击旋转，长按拖动断片。"
+                           DockPanel.Dock="Bottom" />
+
+                <ui:ListView x:Name="Blocks">
+                    <ui:ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2"
+                                         Rows="4" />
+                        </ItemsPanelTemplate>
+                    </ui:ListView.ItemsPanel>
+
+                    <ui:ListView.ItemTemplate>
+                        <DataTemplate DataType="blocks:Block">
+                            <blocks:BlockThumb Title="{Binding Order}"
+                                               Canvas="{Binding Source={StaticResource Drop}, Path=Tag}"
+                                               DragCompleted="BlockThumb_DragCompleted"
+                                               Block="{Binding}" />
+                        </DataTemplate>
+                    </ui:ListView.ItemTemplate>
+                </ui:ListView>
+            </DockPanel>
 
             <DockPanel Grid.Column="1"
                        Margin="10">
@@ -104,7 +81,7 @@
                             TickPlacement="Both" />
                 </DockPanel>
 
-                <DockPanel Margin="0,6,0,0"
+                <DockPanel Margin="0,10,0,0"
                            DockPanel.Dock="Top">
                     <TextBlock Width="80"
                                VerticalAlignment="Center"
@@ -125,7 +102,7 @@
                             TickPlacement="Both" />
                 </DockPanel>
 
-                <DockPanel Margin="0,6,0,0"
+                <DockPanel Margin="0,10,0,0"
                            DockPanel.Dock="Top">
                     <ToggleButton x:Name="Toggle"
                                   HorizontalAlignment="Right"
