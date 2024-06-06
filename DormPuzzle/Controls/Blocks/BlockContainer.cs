@@ -74,6 +74,11 @@ public class BlockContainer : FrameworkElement
 
     public Location PointToLocation(Point point)
     {
+        if (point.X < 0 || point.Y < 0)
+        {
+            return new Location(-1, -1);
+        }
+
         double size = Math.Min(ActualWidth / Columns, ActualHeight / Rows);
 
         double offsetX = (ActualWidth - size * Columns) / 2;
