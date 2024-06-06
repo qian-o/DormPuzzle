@@ -7,8 +7,8 @@
                  xmlns:blocks="clr-namespace:DormPuzzle.Controls.Blocks"
                  mc:Ignorable="d"
                  Title="MainWindow"
-                 Height="450"
-                 Width="800"
+                 Height="768"
+                 Width="1024"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  WindowCornerPreference="Round"
@@ -44,7 +44,7 @@
                     <ui:ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid Columns="2"
-                                         Rows="4" />
+                                         Rows="6" />
                         </ItemsPanelTemplate>
                     </ui:ListView.ItemsPanel>
 

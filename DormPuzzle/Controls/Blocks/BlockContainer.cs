@@ -94,7 +94,8 @@ public class BlockContainer : FrameworkElement
                && location.Row < Rows
                && location.Column >= 0
                && location.Column < Columns
-               && !DisabledLocations.Contains(location);
+               && !DisabledLocations.Contains(location)
+               && !GetBlocksLocations().Contains(location);
     }
 
     public bool TryAddBlock(Location location, Block block)
@@ -103,15 +104,7 @@ public class BlockContainer : FrameworkElement
 
         if (locations.All(IsEffectiveLocation))
         {
-            Location[] blocksLocations = Blocks.SelectMany((item) =>
-            {
-                (Location location, Block block) = item;
-
-                return block.Locations.Select(item => item + location);
-
-            }).ToArray();
-
-            if (locations.Intersect(blocksLocations).Any())
+            if (locations.Intersect(GetBlocksLocations()).Any())
             {
                 return false;
             }
@@ -194,5 +187,16 @@ public class BlockContainer : FrameworkElement
         }
 
         drawingContext.Pop();
+    }
+
+    private Location[] GetBlocksLocations()
+    {
+        return Blocks.SelectMany((item) =>
+        {
+            (Location location, Block block) = item;
+
+            return block.Locations.Select(item => item + location);
+
+        }).ToArray();
     }
 }

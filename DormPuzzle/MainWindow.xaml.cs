@@ -47,9 +47,13 @@ public partial class MainWindow : FluentWindow
         {
             Location location = BlockContainer.PointToLocation(e.GetPosition(BlockContainer));
 
-            if (!BlockContainer.DisabledLocations.Remove(location))
+            if (BlockContainer.IsEffectiveLocation(location))
             {
                 BlockContainer.DisabledLocations.Add(location);
+            }
+            else
+            {
+                BlockContainer.DisabledLocations.Remove(location);
             }
         }
     }
