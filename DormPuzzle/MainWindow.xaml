@@ -57,10 +57,23 @@
                                         IsSnapToTickEnabled="True"
                                         DockPanel.Dock="Bottom" />
                                 <blocks:BlockThumb Margin="0,0,0,4"
-                                                   Title="{Binding Count}"
                                                    Canvas="{Binding Source={StaticResource Drop}, Path=Tag}"
                                                    DragCompleted="BlockThumb_DragCompleted"
-                                                   Block="{Binding}" />
+                                                   Block="{Binding}">
+                                    <blocks:BlockThumb.Title>
+                                        <UniformGrid Columns="2"
+                                                     Rows="1">
+                                            <TextBlock HorizontalAlignment="Left">
+                                                <Run Text="序号：" />
+                                                <Run Text="{Binding Order, Mode=OneTime}" />
+                                            </TextBlock>
+                                            <TextBlock HorizontalAlignment="Right">
+                                                <Run Text="数量：" />
+                                                <Run Text="{Binding Count}" />
+                                            </TextBlock>
+                                        </UniformGrid>
+                                    </blocks:BlockThumb.Title>
+                                </blocks:BlockThumb>
                             </DockPanel>
                         </DataTemplate>
                     </ui:ListView.ItemTemplate>
@@ -110,11 +123,16 @@
                             TickPlacement="Both" />
                 </DockPanel>
 
-                <Button HorizontalAlignment="Right"
-                        Margin="0,10,0,0"
-                        Content="清空网格"
-                        DockPanel.Dock="Top"
-                        Click="Clear_Click" />
+                <DockPanel Margin="0,10,0,0"
+                           HorizontalAlignment="Right"
+                           DockPanel.Dock="Top">
+                    <Button Content="清空网格"
+                            Click="Clear_Click" />
+
+                    <Button Margin="10,0,0,0"
+                            Content="模拟"
+                            Click="Run_Click" />
+                </DockPanel>
 
                 <blocks:BlockContainer x:Name="BlockContainer"
                                        Columns="{Binding ElementName=SliderColumns, Path=Value}"

@@ -25,10 +25,9 @@
                                               Margin="8" />
 
                             <Border VerticalAlignment="Bottom"
-                                    Padding="6,1,1,1"
+                                    Padding="6,1,6,1"
                                     Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
-                                <TextBlock FontSize="16"
-                                           Text="{TemplateBinding Title}" />
+                                <ContentPresenter Content="{TemplateBinding Title}" />
                             </Border>
                         </Grid>
                     </Grid>

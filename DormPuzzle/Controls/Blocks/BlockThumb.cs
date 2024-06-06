@@ -20,9 +20,9 @@ public class BlockThumb : Thumb
 
 
         TitleProperty = DependencyProperty.Register(nameof(Title),
-                                                    typeof(string),
+                                                    typeof(object),
                                                     typeof(BlockThumb),
-                                                    new PropertyMetadata(string.Empty));
+                                                    new PropertyMetadata(null));
 
         DescriptionProperty = DependencyProperty.Register(nameof(Description),
                                                           typeof(string),
@@ -48,9 +48,9 @@ public class BlockThumb : Thumb
         DragCompleted += BlockThumb_DragCompleted;
     }
 
-    public string Title
+    public object? Title
     {
-        get => (string)GetValue(TitleProperty);
+        get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
 

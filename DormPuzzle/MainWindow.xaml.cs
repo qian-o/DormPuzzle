@@ -2,9 +2,11 @@
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using DormPuzzle.Controls.Blocks;
+using DormPuzzle.Game.Tetris;
 using DormPuzzle.Models;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
+using Block = DormPuzzle.Controls.Blocks.Block;
 
 namespace DormPuzzle;
 
@@ -46,7 +48,7 @@ public partial class MainWindow : FluentWindow
     {
         BlockContainer.Clear();
     }
-    
+
     private void BlockContainer_MouseUp(object sender, MouseButtonEventArgs e)
     {
         if (e.ChangedButton == MouseButton.Left)
@@ -62,5 +64,15 @@ public partial class MainWindow : FluentWindow
                 BlockContainer.DisabledLocations.Remove(location);
             }
         }
+    }
+
+    private void Run_Click(object sender, RoutedEventArgs e)
+    {
+        SolveOptions solveOptions = new(BlockContainer.Rows, BlockContainer.Columns, _blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
+        {
+            Walls = [.. BlockContainer.DisabledLocations]
+        };
+
+        List<Solution> solutions = SolveOptions.Solve(solveOptions);
     }
 }
