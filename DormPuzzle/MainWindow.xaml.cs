@@ -66,14 +66,24 @@ public partial class MainWindow : FluentWindow
         }
     }
 
-    private static Block? CreateBlock(BlockCells blk)
+    private Block? CreateBlock(BlockCells blk)
     {
-        // todo
-        throw new NotImplementedException();
+        if (_blocks.FirstOrDefault(item => item.Order == blk.Type) is Block block)
+        {
+            block = (Block)block.Clone();
+            block.Rotate(0);
+            block.Rotate(blk.Rot * 90);
+
+            return block;
+        }
+
+        return null;
     }
 
     private void Run_Click(object sender, RoutedEventArgs e)
     {
+        BlockContainer.Clear();
+
         SolveOptions solveOptions = new(BlockContainer.Columns, BlockContainer.Rows, _blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
         {
             Walls = [.. BlockContainer.DisabledLocations]
