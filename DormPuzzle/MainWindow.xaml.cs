@@ -14,6 +14,22 @@ public partial class MainWindow : FluentWindow
 {
     // 所有的方块。
     private readonly Block[] _blocks;
+    // 所有解决方案
+    private List<Solution> _solutions;
+    // 要显示的解决方案
+    private int _slnToShow;
+
+    public int CurrentScore
+    {
+        get
+        { 
+            if (_slnToShow < _solutions.Count)
+            {
+                return _solutions[_slnToShow].Score;
+            }
+            return 0;
+        }
+    }
 
     public MainWindow()
     {
@@ -29,6 +45,8 @@ public partial class MainWindow : FluentWindow
                                         .ToArray();
 
         Blocks.ItemsSource = _blocks;
+        _solutions = new List<Solution>();
+        _slnToShow = 0;
     }
 
     private void BlockThumb_DragCompleted(object sender, DragCompletedEventArgs e)
@@ -82,17 +100,17 @@ public partial class MainWindow : FluentWindow
 
     private void Run_Click(object sender, RoutedEventArgs e)
     {
-        BlockContainer.Clear();
+        BlockContainer.ClearBlocks();
 
         SolveOptions solveOptions = new(BlockContainer.Columns, BlockContainer.Rows, _blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
         {
-            Walls = [.. BlockContainer.DisabledLocations]
+            Walls = [.. BlockContainer.DisabledLocations],
         };
 
-        List<Solution> solutions = SolveOptions.Solve(solveOptions);
-        if (solutions.Count > 0)
+        _solutions = SolveOptions.Solve(solveOptions);
+        if (_solutions.Count > 0)
         {
-            var sln = solutions[0];
+            var sln = _slnToShow < _solutions.Count ? _solutions[_slnToShow] : _solutions[0];
             foreach (var placement in sln.Placements)
             {
                 BlockContainer.TryAddBlock(

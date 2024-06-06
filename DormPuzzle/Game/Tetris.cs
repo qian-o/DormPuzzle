@@ -205,6 +205,11 @@ namespace DormPuzzle.Game.Tetris
             return null;
         }
 
+        public bool GetCellUnchecked(int x, int y)
+        {
+            return _cells[x + y * Width];
+        }
+
         public override bool Equals(object? obj) => this.Equals(obj as BlockCells);
 
         public bool Equals(BlockCells? other)
@@ -388,7 +393,7 @@ namespace DormPuzzle.Game.Tetris
                     for (var w = 0; w < block.Width; w++)
                     {
                         var dst = _map[index + w + h * Width];
-                        var src = block.GetCell(w, h) ?? true;
+                        var src = block.GetCellUnchecked(w, h);
                         if (dst != EmptyCell && src)
                             return false;
                     }
@@ -399,7 +404,10 @@ namespace DormPuzzle.Game.Tetris
             {
                 for (var w = 0; w < block.Width; w++)
                 {
-                    _map[index + w + h * Width] = (sbyte)cell;
+                    if (block.GetCellUnchecked(w, h))
+                    {
+                        _map[index + w + h * Width] = (sbyte)cell;
+                    }
                 }
             }
             return true;
@@ -421,7 +429,7 @@ namespace DormPuzzle.Game.Tetris
                 for (var w = 0; w < block.Width; w++)
                 {
                     var dst = _map[index + w + h * Width];
-                    var src = block.GetCell(w, h) ?? true;
+                    var src = block.GetCellUnchecked(w, h);
                     if (dst != EmptyCell && src)
                         return false;
                 }
@@ -573,7 +581,7 @@ namespace DormPuzzle.Game.Tetris
                         _blockNums[type] -= 1;
                         _remainBlocks -= 1;
 
-                        _map.SetBlock(index, block);
+                        _map.SetBlock(index, block, force: true);
                         var (x, y) = _map.XYOf(index)!.Value;
                         _tempSln.Placements.Add(new Placement
                         {
@@ -588,6 +596,7 @@ namespace DormPuzzle.Game.Tetris
                         }
 
                         _tempSln.Placements.RemoveAt(_tempSln.Placements.Count - 1);
+                        _map.SetBlock(index, block, Map.EmptyCell, true);
 
                         _blockNums[type] += 1;
                         _remainBlocks += 1;
