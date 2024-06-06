@@ -10,17 +10,23 @@ namespace DormPuzzle;
 
 public partial class MainWindow : FluentWindow
 {
+    // 所有的方块。
+    private readonly Block[] _blocks;
+
     public MainWindow()
     {
         InitializeComponent();
 
         SystemThemeWatcher.Watch(this);
 
-        Blocks.ItemsSource = typeof(Block).Assembly.GetTypes()
-                                                   .Where(type => type.IsSubclassOf(typeof(Block)))
-                                                   .Select(Activator.CreateInstance)
-                                                   .OrderBy(block => ((Block)block!).Order)
-                                                   .ToArray();
+        _blocks = typeof(Block).Assembly.GetTypes()
+                                        .Where(type => type.IsSubclassOf(typeof(Block)))
+                                        .Select(Activator.CreateInstance)
+                                        .OrderBy(block => ((Block)block!).Order)
+                                        .Cast<Block>()
+                                        .ToArray();
+
+        Blocks.ItemsSource = _blocks;
     }
 
     private void BlockThumb_DragCompleted(object sender, DragCompletedEventArgs e)
