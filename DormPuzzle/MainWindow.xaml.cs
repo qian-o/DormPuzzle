@@ -44,7 +44,7 @@ public partial class MainWindow : FluentWindow
 
     private void Clear_Click(object sender, RoutedEventArgs e)
     {
-        BlockContainer.ClearBlocks();
+        BlockContainer.Clear();
     }
     
     private void BlockContainer_MouseUp(object sender, MouseButtonEventArgs e)

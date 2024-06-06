@@ -18,12 +18,12 @@ public class BlockContainer : FrameworkElement
         ColumnsProperty = DependencyProperty.Register(nameof(Columns),
                                                       typeof(int),
                                                       typeof(BlockContainer),
-                                                      new PropertyMetadata(1, (a, b) => { ((BlockContainer)a).DisabledLocations.Clear(); ((BlockContainer)a).ClearBlocks(); }));
+                                                      new PropertyMetadata(1, (a, b) => { ((BlockContainer)a).Clear(); }));
 
         RowsProperty = DependencyProperty.Register(nameof(Rows),
                                                    typeof(int),
                                                    typeof(BlockContainer),
-                                                   new PropertyMetadata(1, (a, b) => { ((BlockContainer)a).DisabledLocations.Clear(); ((BlockContainer)a).ClearBlocks(); }));
+                                                   new PropertyMetadata(1, (a, b) => { ((BlockContainer)a).Clear(); }));
 
         BorderThicknessProperty = DependencyProperty.Register(nameof(BorderThickness),
                                                               typeof(double),
@@ -117,7 +117,7 @@ public class BlockContainer : FrameworkElement
         return false;
     }
 
-    public void ClearBlocks()
+    public void Clear()
     {
         DisabledLocations.Clear();
         Blocks.Clear();
