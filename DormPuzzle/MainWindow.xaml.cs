@@ -66,13 +66,31 @@ public partial class MainWindow : FluentWindow
         }
     }
 
+    private static Block? CreateBlock(BlockCells blk)
+    {
+        // todo
+        throw new NotImplementedException();
+    }
+
     private void Run_Click(object sender, RoutedEventArgs e)
     {
-        SolveOptions solveOptions = new(BlockContainer.Rows, BlockContainer.Columns, _blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
+        SolveOptions solveOptions = new(BlockContainer.Columns, BlockContainer.Rows, _blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
         {
             Walls = [.. BlockContainer.DisabledLocations]
         };
 
         List<Solution> solutions = SolveOptions.Solve(solveOptions);
+        if (solutions.Count > 0)
+        {
+            var sln = solutions[0];
+            foreach (var placement in sln.Placements)
+            {
+                BlockContainer.TryAddBlock(
+                    new Location(placement.Y, placement.X),
+                    CreateBlock(placement.Block)!
+                );
+            }
+        }
+        
     }
 }

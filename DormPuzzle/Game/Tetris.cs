@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace DormPuzzle.Game.Tetris
 {
-    public sealed class Block: IEquatable<Block>
+    public sealed class BlockCells: IEquatable<BlockCells>
     {
         public static readonly int MaxWidth = 4;
         public static readonly int MaxHeight = 4;
@@ -27,7 +27,7 @@ namespace DormPuzzle.Game.Tetris
 
         private readonly bool[] _cells;
 
-        private static readonly List<List<Block>> _blocks;
+        private static readonly List<List<BlockCells>> _blocks;
 
         public static int NumTypes => _blocks.Count;
 
@@ -38,7 +38,7 @@ namespace DormPuzzle.Game.Tetris
             return null;
         }
 
-        public static Block? Get(int type, int rot)
+        public static BlockCells? Get(int type, int rot)
         {
             if (NumRots(type) is { } num && num > rot)
                 return _blocks[type - 1][rot];
@@ -50,70 +50,70 @@ namespace DormPuzzle.Game.Tetris
             return 0 < type && type <= NumTypes;
         }
 
-        static Block()
+        static BlockCells()
         {
-            var bases = new Block[]
+            var bases = new BlockCells[]
             {
-                new Block(1, 0, new byte[,]
+                new BlockCells(1, 0, new byte[,]
                 {
                     { 1, 1 },
                     { 1, 1 }
                 }),
-                new Block(2, 0, new byte[,]
+                new BlockCells(2, 0, new byte[,]
                 {
                     { 1, 1, 1, 1 }
                 }),
-                new Block(33, 0, new byte[,]
+                new BlockCells(3, 0, new byte[,]
                 {
                     { 1, 1, 0 },
                     { 0, 1, 1 }
                 }),
-                new Block(4, 0, new byte[,]
+                new BlockCells(4, 0, new byte[,]
                 {
                     { 0, 1, 1 },
                     { 1, 1, 0 },
                 }),
-                new Block(5, 0, new byte[,]
+                new BlockCells(5, 0, new byte[,]
                 {
                     { 1, 0, 0 },
                     { 1, 1, 1 },
                 }),
-                new Block(6, 0, new byte[,]
+                new BlockCells(6, 0, new byte[,]
                 {
                     { 0, 0, 1 },
                     { 1, 1, 1 },
                 }),
-                new Block(7, 0, new byte[,]
+                new BlockCells(7, 0, new byte[,]
                 {
                     { 0, 1, 0 },
                     { 1, 1, 1 },
                 }),
-                new Block(8, 0, new byte[,]
+                new BlockCells(8, 0, new byte[,]
                 {
-                    { 0, 8, 0 },
-                    { 8, 8, 8 },
-                    { 0, 8, 0 },
+                    { 0, 1, 0 },
+                    { 1, 1, 1 },
+                    { 0, 1, 0 },
                 }),
-                new Block(9, 0, new byte[,]
+                new BlockCells(9, 0, new byte[,]
                 {
                     { 1 }
                 }),
-                new Block(10, 0, new byte[,]
+                new BlockCells(10, 0, new byte[,]
                 {
                     { 1, 1 }
                 }),
-                new Block(11, 0, new byte[,]
+                new BlockCells(11, 0, new byte[,]
                 {
                     { 1, 0 },
                     { 1, 1 },
                 }),
             };
 
-            var blocks = new List<List<Block>>(bases.Length);
+            var blocks = new List<List<BlockCells>>(bases.Length);
 
             foreach (var blk in bases)
             {
-                var set = new List<Block>();
+                var set = new List<BlockCells>();
                 blocks.Add(set);
                 set.Add(blk);
 
@@ -133,7 +133,7 @@ namespace DormPuzzle.Game.Tetris
             _blocks = blocks;
         }
 
-        private Block(int type, int rot, byte[,] cells)
+        private BlockCells(int type, int rot, byte[,] cells)
         {
             var height = cells.GetLength(0);
             var width = cells.GetLength(1);
@@ -162,28 +162,38 @@ namespace DormPuzzle.Game.Tetris
             NumCells = numCells;
         }
 
-        private Block RotateCW(int rot)
+        private BlockCells(int type, int rot, int width, int height, bool[] cells)
+        {
+            Type = type;
+            Rot = rot;
+            Width = width;
+            Height = height;
+            _cells = cells;
+            NumCells = _cells.Count(c => c);
+        }
+
+        private BlockCells RotateCW(int rot)
         {
             var width = Height;
             var height = Width;
 
-            var cells = new byte[height, width];
-
+            var cells = new bool[height * width];
+            var index = 0;
             for (var y = 0; y < height; y++)
             {
                 for (var x = 0; x < width; x++)
                 {
-                    cells[y, x] = cells[width - x - 1, y];
+                    cells[index++] = _cells[(width - x - 1) * Width + y];
                 }
             }
 
-            return new Block(Type, rot, cells);
+            return new BlockCells(Type, rot, width, height, cells);
         }
 
         /// <summary>
         /// 用来检查两个 Block 是否有完全一样的 Cells
         /// </summary>
-        private bool AreCellsSame(Block other)
+        private bool AreCellsSame(BlockCells other)
         {
             return Width == other.Width && Height == other.Height && _cells.SequenceEqual(other._cells);
         }
@@ -195,9 +205,9 @@ namespace DormPuzzle.Game.Tetris
             return null;
         }
 
-        public override bool Equals(object? obj) => this.Equals(obj as Block);
+        public override bool Equals(object? obj) => this.Equals(obj as BlockCells);
 
-        public bool Equals(Block? other)
+        public bool Equals(BlockCells? other)
         {
             if (other is null)
                 return false;
@@ -209,22 +219,28 @@ namespace DormPuzzle.Game.Tetris
                 Rot == other.Rot;
         }
 
-        public static bool operator ==(Block? left, Block? right) => left is { } l && l.Equals(right);
+        public static bool operator ==(BlockCells? left, BlockCells? right) => left is { } l && l.Equals(right);
 
-        public static bool operator !=(Block? left, Block? right) => !(left == right);
+        public static bool operator !=(BlockCells? left, BlockCells? right) => !(left == right);
     }
 
     public struct Placement
     {
         public int X;
         public int Y;
-        public Block Block;
+        public BlockCells Block;
     }
 
     public struct Solution
     {
         public List<Placement> Placements;
         public int Score;
+
+        public Solution()
+        {
+            Placements = new();
+            Score = 0;
+        }
 
         public Solution Clone()
         {
@@ -246,7 +262,7 @@ namespace DormPuzzle.Game.Tetris
     public class Map
     {
         public static readonly int EmptyCell = 0;
-        public static readonly int WallCell = 0;
+        public static readonly int WallCell = -1;
 
         public readonly int Width;
         public readonly int Height;
@@ -263,7 +279,7 @@ namespace DormPuzzle.Game.Tetris
 
         public static bool IsValidCell(int type)
         {
-            return type == EmptyCell || type == WallCell || Block.IsValidType(type);
+            return type == EmptyCell || type == WallCell || BlockCells.IsValidType(type);
         }
 
         private int IndexOfUnchecked(int x, int y)
@@ -340,7 +356,7 @@ namespace DormPuzzle.Game.Tetris
         /// <param name="altnative">替换的 Cell</param>
         /// <param name="force">是否强制摆放，为 true 时直接替换掉原有的 Cell</param>
         /// <returns>是否摆放成功</returns>
-        public bool SetBlock(int x, int y, Block block, int? altnative = null, bool force = false)
+        public bool SetBlock(int x, int y, BlockCells block, int? altnative = null, bool force = false)
         {
             if (IndexOf(x, y) is { } index)
             {
@@ -352,7 +368,7 @@ namespace DormPuzzle.Game.Tetris
         /// <summary>
         /// 功能和同名重载一样
         /// </summary>
-        public bool SetBlock(int index, Block block, int? altnative = null, bool force = false)
+        public bool SetBlock(int index, BlockCells block, int? altnative = null, bool force = false)
         {
             if (!(0 <= index && index < Width * Height))
                 return false;
@@ -389,7 +405,7 @@ namespace DormPuzzle.Game.Tetris
             return true;
         }
 
-        public bool CanSetBlock(int index, Block block)
+        public bool CanSetBlock(int index, BlockCells block)
         {
             if (!(0 <= index && index < Width * Height))
                 return false;
@@ -457,7 +473,7 @@ namespace DormPuzzle.Game.Tetris
         {
             Width = width;
             Height = height;
-            BlockNums = new int[Block.NumTypes];
+            BlockNums = new int[BlockCells.NumTypes];
             blockNums.CopyTo(BlockNums, 0);
 
             Walls = null;
@@ -468,7 +484,7 @@ namespace DormPuzzle.Game.Tetris
 
         public int[] MakeOrderedTypes()
         {
-            var res = new int[Block.NumTypes];
+            var res = new int[BlockCells.NumTypes];
             for (var i = 0; i < res.Length; i++)
             {
                 res[i] = i + 1;
@@ -513,7 +529,7 @@ namespace DormPuzzle.Game.Tetris
             public SolveDfs(SolveOptions options)
             {
                 _types = options.MakeOrderedTypes();
-                _blockNums = new int[Block.NumTypes + 1];
+                _blockNums = new int[BlockCells.NumTypes + 1];
                 options.BlockNums.CopyTo(_blockNums, 1);
                 _maxSolutions = options.MaxSolutions;
                 _remainBlocks = options.TotalBlockNums;
@@ -544,10 +560,10 @@ namespace DormPuzzle.Game.Tetris
                         continue;
                     }
 
-                    var numRots = Block.NumRots(type);
+                    var numRots = BlockCells.NumRots(type);
                     for (int rot = 0; rot < numRots; rot++)
                     {
-                        var block = Block.Get(type, rot);
+                        var block = BlockCells.Get(type, rot);
                         Debug.Assert(block != null, nameof(block) + " != null");
                         if (!_map.CanSetBlock(index, block))
                         {
