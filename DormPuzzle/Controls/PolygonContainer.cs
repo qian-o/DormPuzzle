@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
@@ -10,7 +12,7 @@ using DormPuzzle.Polygons;
 namespace DormPuzzle.Controls;
 
 [ContentProperty(nameof(Children))]
-public class PolygonContainer : Control
+public class PolygonContainer : Control, INotifyPropertyChanged
 {
     public static readonly DependencyProperty ColumnsProperty;
     public static readonly DependencyProperty RowsProperty;
@@ -39,6 +41,8 @@ public class PolygonContainer : Control
         BorderBrushProperty.OverrideMetadata(typeof(PolygonContainer),
                                              new FrameworkPropertyMetadata(Brushes.Black));
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public PolygonContainer()
     {
@@ -375,5 +379,17 @@ public class PolygonContainer : Control
             Direction.Bottom => row == Rows - 1 || !Children.Any(child => child.Column == column && child.Row == row + 1),
             _ => false,
         };
+    }
+
+    protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value))
+        {
+            return;
+        }
+
+        field = value;
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -9,6 +9,7 @@ public abstract class Block : PolygonContainer
 {
     protected Location[] _locations = [];
     protected Brush _fill;
+    private int count;
 
     protected Block(int order, int rows, int columns, Brush fill)
     {
@@ -26,6 +27,8 @@ public abstract class Block : PolygonContainer
     public Location StartLocation { get; private set; }
 
     public Degrees Degrees { get; private set; }
+
+    public int Count { get => count; set => SetProperty(ref count, value); }
 
     protected void AssignLocations()
     {
@@ -45,6 +48,7 @@ public abstract class Block : PolygonContainer
     public override PolygonContainer Clone()
     {
         Block block = (Block)Activator.CreateInstance(GetType())!;
+        block.Count = Count;
         block.Rotate((int)Degrees);
 
         return block;

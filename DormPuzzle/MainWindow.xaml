@@ -50,10 +50,18 @@
 
                     <ui:ListView.ItemTemplate>
                         <DataTemplate DataType="blocks:Block">
-                            <blocks:BlockThumb Title="{Binding Order}"
-                                               Canvas="{Binding Source={StaticResource Drop}, Path=Tag}"
-                                               DragCompleted="BlockThumb_DragCompleted"
-                                               Block="{Binding}" />
+                            <DockPanel>
+                                <Slider Minimum="0"
+                                        Maximum="20"
+                                        Value="{Binding Count}"
+                                        IsSnapToTickEnabled="True"
+                                        DockPanel.Dock="Bottom" />
+                                <blocks:BlockThumb Margin="0,0,0,4"
+                                                   Title="{Binding Count}"
+                                                   Canvas="{Binding Source={StaticResource Drop}, Path=Tag}"
+                                                   DragCompleted="BlockThumb_DragCompleted"
+                                                   Block="{Binding}" />
+                            </DockPanel>
                         </DataTemplate>
                     </ui:ListView.ItemTemplate>
                 </ui:ListView>
