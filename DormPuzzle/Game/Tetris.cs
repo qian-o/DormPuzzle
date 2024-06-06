@@ -500,7 +500,9 @@ namespace DormPuzzle.Game.Tetris
 
             if (PreferLargerNumber)
             {
-                Array.Sort(BlockNums, res, Comparer<int>.Create((a, b) => b.CompareTo(a)));
+                var keys = new int[BlockNums.Length];
+                BlockNums.CopyTo(keys, 0);
+                Array.Sort(keys, res, Comparer<int>.Create((a, b) => b.CompareTo(a)));
             }
             return res;
         }
