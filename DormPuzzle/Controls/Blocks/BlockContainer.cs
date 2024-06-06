@@ -119,6 +119,7 @@ public class BlockContainer : FrameworkElement
 
     public void ClearBlocks()
     {
+        DisabledLocations.Clear();
         Blocks.Clear();
     }
 

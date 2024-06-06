@@ -36,14 +36,14 @@ public partial class MainWindow : FluentWindow
         }
     }
 
-    private void Toggle_Click(object sender, RoutedEventArgs e)
+    private void Clear_Click(object sender, RoutedEventArgs e)
     {
         BlockContainer.ClearBlocks();
     }
-
+    
     private void BlockContainer_MouseUp(object sender, MouseButtonEventArgs e)
     {
-        if (Toggle.IsChecked == true && e.ChangedButton == MouseButton.Left)
+        if (e.ChangedButton == MouseButton.Left)
         {
             Location location = BlockContainer.PointToLocation(e.GetPosition(BlockContainer));
 

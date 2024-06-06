@@ -9,7 +9,7 @@ public abstract class Block : PolygonContainer
 {
     protected Location[] _locations = [];
     protected Brush _fill;
-    private int count;
+    private int count = 5;
 
     protected Block(int order, int rows, int columns, Brush fill)
     {
