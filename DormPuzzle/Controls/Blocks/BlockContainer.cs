@@ -122,10 +122,20 @@ public class BlockContainer : FrameworkElement
         return false;
     }
 
-    public void Clear()
+    public void ClearDisabledLocations()
     {
         DisabledLocations.Clear();
+    }
+
+    public void ClearBlocks()
+    {
         Blocks.Clear();
+    }
+
+    public void Clear()
+    {
+        ClearDisabledLocations();
+        ClearBlocks();
     }
 
     protected override void OnRender(DrawingContext drawingContext)
