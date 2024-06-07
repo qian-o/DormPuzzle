@@ -110,7 +110,7 @@ public abstract class Block : PolygonContainer
     {
         Block block = (Block)Activator.CreateInstance(GetType())!;
         block.Count = Count;
-        block.Rotate((int)Degrees);
+        block.RotateAt((int)Degrees);
 
         return block;
     }
@@ -134,18 +134,26 @@ public abstract class Block : PolygonContainer
         }
     }
 
-    public void Rotate(int degrees)
+    public void RotateAt(int degrees)
     {
-        if (degrees % 90 != 0)
+        if ((int)Degrees != degrees)
         {
-            throw new ArgumentException("Degrees must be a multiple of 90.");
-        }
+            if (degrees % 90 != 0)
+            {
+                throw new ArgumentException("Degrees must be a multiple of 90.");
+            }
 
-        int rotations = degrees / 90;
+            int times = (degrees - (int)Degrees) / 90;
 
-        for (int i = 0; i < rotations; i++)
-        {
-            Rotate();
+            if (times < 0)
+            {
+                times += 4;
+            }
+
+            for (int i = 0; i < times; i++)
+            {
+                Rotate();
+            }
         }
     }
 

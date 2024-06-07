@@ -116,8 +116,7 @@ public partial class PuzzleViewModel(PuzzlePage puzzlePage) : UViewModel<PuzzleP
         if (Blocks.FirstOrDefault(item => item.Order == blockCells.Type) is Block block)
         {
             block = (Block)block.Clone();
-            block.Rotate(0);
-            block.Rotate(blockCells.Rot * 90);
+            block.RotateAt(blockCells.Rot * 90);
 
             return block;
         }
