@@ -30,6 +30,18 @@ public abstract class Block : PolygonContainer
 
     public int Count { get => count; set => SetProperty(ref count, value); }
 
+    protected override bool RenderInternal(double width, double height, DrawingContext drawingContext)
+    {
+        if (!base.RenderInternal(width, height, drawingContext))
+        {
+            return false;
+        }
+
+        // TODO: Render Order.
+
+        return true;
+    }
+
     protected void AssignLocations()
     {
         if (_locations.Length == 0)

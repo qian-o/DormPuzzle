@@ -25,7 +25,6 @@
 
         <ui:NavigationView x:Name="RootNavigation"
                            Grid.Row="1"
-                           PaneTitle="q123"
                            PaneDisplayMode="LeftFluent">
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem NavigationCacheMode="Enabled"

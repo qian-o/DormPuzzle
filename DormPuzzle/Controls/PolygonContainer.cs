@@ -133,7 +133,7 @@ public class PolygonContainer : Control, INotifyPropertyChanged
         RenderInternal(ActualWidth, ActualHeight, drawingContext);
     }
 
-    private void RenderInternal(double width, double height, DrawingContext drawingContext)
+    protected virtual bool RenderInternal(double width, double height, DrawingContext drawingContext)
     {
         double cellWidth = width / Columns;
         double cellHeight = height / Rows;
@@ -157,7 +157,7 @@ public class PolygonContainer : Control, INotifyPropertyChanged
 
         if (actualWidth <= 0.0 || actualHeight <= 0.0 || Children.Count == 0)
         {
-            return;
+            return false;
         }
 
         drawingContext.PushTransform(new TranslateTransform(offsetX, offsetY));
@@ -350,6 +350,8 @@ public class PolygonContainer : Control, INotifyPropertyChanged
         }
 
         drawingContext.Pop();
+
+        return true;
     }
 
     private bool Contains(Polygon polygon)
