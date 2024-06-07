@@ -24,24 +24,30 @@
                      Title="Dorm Puzzle" />
 
         <ui:NavigationView x:Name="RootNavigation"
-                           Grid.Row="1">
+                           Grid.Row="1"
+                           PaneTitle="q123"
+                           PaneDisplayMode="LeftFluent">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="模拟拼图"
-                                       NavigationCacheMode="Enabled"
+                <ui:NavigationViewItem NavigationCacheMode="Enabled"
                                        TargetPageType="{x:Type pages:PuzzlePage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="GlanceHorizontalSparkles24" />
                     </ui:NavigationViewItem.Icon>
+
+                    <TextBlock FontSize="10"
+                               Text="拼图" />
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
 
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Settings"
-                                       NavigationCacheMode="Disabled"
+                <ui:NavigationViewItem NavigationCacheMode="Disabled"
                                        TargetPageType="{x:Type pages:SettingsPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Settings24" />
                     </ui:NavigationViewItem.Icon>
+
+                    <TextBlock FontSize="10"
+                               Text="Settings" />
                 </ui:NavigationViewItem>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
