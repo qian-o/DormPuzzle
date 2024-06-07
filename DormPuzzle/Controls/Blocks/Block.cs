@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using DormPuzzle.Models;
 using DormPuzzle.Polygons;
 
@@ -72,19 +74,12 @@ public abstract class Block : PolygonContainer
 
                 drawingContext.PushTransform(new TranslateTransform(marginH, marginV));
                 {
-                    float pixelsPerDip = (float)VisualTreeHelper.GetDpi(Application.Current.MainWindow).PixelsPerDip;
+                    VisualBrush visualBrush = new()
+                    {
+                        Visual = OrderBrush(w, h)
+                    };
 
-                    FormattedText text = new(Order.ToString(CultureInfo.InvariantCulture),
-                                             CultureInfo.InvariantCulture,
-                                             FlowDirection.LeftToRight,
-                                             FontFamily.GetTypefaces().First(),
-                                             0.9 * Math.Min(w, h),
-                                             Brushes.White,
-                                             pixelsPerDip);
-
-                    drawingContext.DrawGeometry(Brushes.White,
-                                                null,
-                                                text.BuildGeometry(new Point((w - text.Width) / 2, (h - text.Height) / 2)));
+                    drawingContext.DrawRectangle(visualBrush, null, new Rect(0, 0, w, h));
 
                 }
                 drawingContext.Pop();
@@ -152,5 +147,53 @@ public abstract class Block : PolygonContainer
         {
             Rotate();
         }
+    }
+
+    private Grid OrderBrush(double width, double height)
+    {
+        Grid grid = new()
+        {
+            Width = width,
+            Height = height,
+            Background = Brushes.Transparent
+        };
+
+        Border border = new()
+        {
+            CornerRadius = new CornerRadius(0.1 * Math.Min(width, height)),
+            Background = new RadialGradientBrush()
+            {
+                Center = new(0.2, 0.2),
+                GradientStops =
+                [
+                    new(Colors.White, 0.0),
+                    new(Colors.LightGray, 0.5),
+                    new(Colors.DarkGray, 1.0)
+                ],
+                RadiusX = 1.0,
+                RadiusY = 1.0
+            },
+            Effect = new BlurEffect
+            {
+                Radius = 8,
+                KernelType = KernelType.Gaussian
+            },
+            Opacity = 0.2
+        };
+
+        TextBlock textBlock = new()
+        {
+            Text = Order.ToString(CultureInfo.InvariantCulture),
+            Foreground = Brushes.White,
+            FontSize = 0.8 * Math.Min(width, height),
+            FontWeight = FontWeights.Bold,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+
+        grid.Children.Add(border);
+        grid.Children.Add(textBlock);
+
+        return grid;
     }
 }
