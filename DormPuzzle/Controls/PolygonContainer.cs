@@ -135,25 +135,14 @@ public class PolygonContainer : Control, INotifyPropertyChanged
 
     protected virtual bool RenderInternal(double width, double height, DrawingContext drawingContext)
     {
-        double cellWidth = width / Columns;
-        double cellHeight = height / Rows;
-
-        double offsetX = 0.0;
-        double offsetY = 0.0;
-
-        if (Uniform)
-        {
-            double size = Math.Min(cellWidth, cellHeight);
-
-            offsetX = (width - size * Columns) / 2;
-            offsetY = (height - size * Rows) / 2;
-
-            cellWidth = size;
-            cellHeight = size;
-        }
-
-        double actualWidth = cellWidth * Columns;
-        double actualHeight = cellHeight * Rows;
+        CalcLayout(width,
+                   height,
+                   out double offsetX,
+                   out double offsetY,
+                   out double actualWidth,
+                   out double actualHeight,
+                   out double cellWidth,
+                   out double cellHeight);
 
         if (actualWidth <= 0.0 || actualHeight <= 0.0 || Children.Count == 0)
         {
@@ -381,6 +370,36 @@ public class PolygonContainer : Control, INotifyPropertyChanged
             Direction.Bottom => row == Rows - 1 || !Children.Any(child => child.Column == column && child.Row == row + 1),
             _ => false,
         };
+    }
+
+    protected void CalcLayout(double width,
+                              double height,
+                              out double offsetX,
+                              out double offsetY,
+                              out double actualWidth,
+                              out double actualHeight,
+                              out double cellWidth,
+                              out double cellHeight)
+    {
+        cellWidth = width / Columns;
+        cellHeight = height / Rows;
+
+        offsetX = 0.0;
+        offsetY = 0.0;
+
+        if (Uniform)
+        {
+            double size = Math.Min(cellWidth, cellHeight);
+
+            offsetX = (width - size * Columns) / 2;
+            offsetY = (height - size * Rows) / 2;
+
+            cellWidth = size;
+            cellHeight = size;
+        }
+
+        actualWidth = cellWidth * Columns;
+        actualHeight = cellHeight * Rows;
     }
 
     protected void SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

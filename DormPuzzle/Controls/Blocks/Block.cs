@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Windows;
 using System.Windows.Media;
 using DormPuzzle.Models;
 using DormPuzzle.Polygons;
@@ -8,6 +10,7 @@ namespace DormPuzzle.Controls.Blocks;
 public abstract class Block : PolygonContainer
 {
     protected Location[] _locations = [];
+    protected Location[] _orderLocations = [];
     protected Brush _fill;
     private int count = 1;
 
@@ -24,6 +27,8 @@ public abstract class Block : PolygonContainer
 
     public ReadOnlyCollection<Location> Locations => new(_locations);
 
+    public ReadOnlyCollection<Location> OrderLocations => new(_orderLocations);
+
     public Location StartLocation { get; private set; }
 
     public Degrees Degrees { get; private set; }
@@ -37,7 +42,56 @@ public abstract class Block : PolygonContainer
             return false;
         }
 
-        // TODO: Render Order.
+        CalcLayout(width,
+                   height,
+                   out double offsetX,
+                   out double offsetY,
+                   out double actualWidth,
+                   out double actualHeight,
+                   out double cellWidth,
+                   out double cellHeight);
+
+        drawingContext.PushTransform(new TranslateTransform(offsetX, offsetY));
+        {
+            int startRow = _orderLocations.Min(l => l.Row);
+            int startColumn = _orderLocations.Min(l => l.Column);
+            int endRow = _orderLocations.Max(l => l.Row);
+            int endColumn = _orderLocations.Max(l => l.Column);
+
+            double x = startColumn * cellWidth;
+            double y = startRow * cellHeight;
+            double w = (endColumn - startColumn + 1) * cellWidth;
+            double h = (endRow - startRow + 1) * cellHeight;
+
+            drawingContext.PushTransform(new TranslateTransform(x, y));
+            {
+                double marginH = w * 0.1;
+                double marginV = h * 0.1;
+                w -= marginH * 2.0;
+                h -= marginV * 2.0;
+
+                drawingContext.PushTransform(new TranslateTransform(marginH, marginV));
+                {
+                    float pixelsPerDip = (float)VisualTreeHelper.GetDpi(Application.Current.MainWindow).PixelsPerDip;
+
+                    FormattedText text = new(Order.ToString(CultureInfo.InvariantCulture),
+                                             CultureInfo.InvariantCulture,
+                                             FlowDirection.LeftToRight,
+                                             FontFamily.GetTypefaces().First(),
+                                             0.9 * Math.Min(w, h),
+                                             Brushes.White,
+                                             pixelsPerDip);
+
+                    drawingContext.DrawGeometry(Brushes.White,
+                                                null,
+                                                text.BuildGeometry(new Point((w - text.Width) / 2, (h - text.Height) / 2)));
+
+                }
+                drawingContext.Pop();
+            }
+            drawingContext.Pop();
+        }
+        drawingContext.Pop();
 
         return true;
     }
@@ -71,6 +125,7 @@ public abstract class Block : PolygonContainer
         Children.Clear();
 
         _locations = _locations.Select(item => new Location(item.Column, Rows - item.Row - 1)).ToArray();
+        _orderLocations = _orderLocations.Select(item => new Location(item.Column, Rows - item.Row - 1)).ToArray();
 
         (Rows, Columns) = (Columns, Rows);
 
