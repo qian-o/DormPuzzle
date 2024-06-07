@@ -1,14 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using DormPuzzle.Models;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows.Media;
+using DormPuzzle.Models;
 
 namespace DormPuzzle.Game.Tetris
 {
-    public sealed class BlockCells: IEquatable<BlockCells>
+    public sealed class BlockCells : IEquatable<BlockCells>
     {
         public static readonly int MaxWidth = 4;
         public static readonly int MaxHeight = 4;
@@ -54,55 +50,55 @@ namespace DormPuzzle.Game.Tetris
         {
             var bases = new BlockCells[]
             {
-                new BlockCells(1, 0, new byte[,]
+                new(1, 0, new byte[,]
                 {
                     { 1, 1 },
                     { 1, 1 }
                 }),
-                new BlockCells(2, 0, new byte[,]
+                new(2, 0, new byte[,]
                 {
                     { 1, 1, 1, 1 }
                 }),
-                new BlockCells(3, 0, new byte[,]
+                new(3, 0, new byte[,]
                 {
                     { 1, 1, 0 },
                     { 0, 1, 1 }
                 }),
-                new BlockCells(4, 0, new byte[,]
+                new(4, 0, new byte[,]
                 {
                     { 0, 1, 1 },
                     { 1, 1, 0 },
                 }),
-                new BlockCells(5, 0, new byte[,]
+                new(5, 0, new byte[,]
                 {
                     { 1, 0, 0 },
                     { 1, 1, 1 },
                 }),
-                new BlockCells(6, 0, new byte[,]
+                new(6, 0, new byte[,]
                 {
                     { 0, 0, 1 },
                     { 1, 1, 1 },
                 }),
-                new BlockCells(7, 0, new byte[,]
+                new(7, 0, new byte[,]
                 {
                     { 0, 1, 0 },
                     { 1, 1, 1 },
                 }),
-                new BlockCells(8, 0, new byte[,]
+                new(8, 0, new byte[,]
                 {
                     { 0, 1, 0 },
                     { 1, 1, 1 },
                     { 0, 1, 0 },
                 }),
-                new BlockCells(9, 0, new byte[,]
+                new(9, 0, new byte[,]
                 {
                     { 1 }
                 }),
-                new BlockCells(10, 0, new byte[,]
+                new(10, 0, new byte[,]
                 {
                     { 1, 1 }
                 }),
-                new BlockCells(11, 0, new byte[,]
+                new(11, 0, new byte[,]
                 {
                     { 1, 0 },
                     { 1, 1 },
@@ -216,7 +212,7 @@ namespace DormPuzzle.Game.Tetris
         {
             if (other is null)
                 return false;
-            
+
             if (ReferenceEquals(this, other))
                 return true;
 
@@ -227,6 +223,11 @@ namespace DormPuzzle.Game.Tetris
         public static bool operator ==(BlockCells? left, BlockCells? right) => left is { } l && l.Equals(right);
 
         public static bool operator !=(BlockCells? left, BlockCells? right) => !(left == right);
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Type, Rot);
+        }
     }
 
     public struct Placement
@@ -243,7 +244,7 @@ namespace DormPuzzle.Game.Tetris
 
         public Solution()
         {
-            Placements = new();
+            Placements = [];
             Score = 0;
         }
 
@@ -300,7 +301,7 @@ namespace DormPuzzle.Game.Tetris
             }
             else
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentException("Invalid cell index");
             }
         }
 
@@ -475,7 +476,7 @@ namespace DormPuzzle.Game.Tetris
         /// </summary>
         public bool KeepTopOnly;
 
-        private int TotalBlockNums => BlockNums.Aggregate(0, (acc, b) => acc + b);
+        private readonly int TotalBlockNums => BlockNums.Aggregate(0, (acc, b) => acc + b);
 
         public SolveOptions(int width, int height, int[] blockNums)
         {
@@ -490,7 +491,7 @@ namespace DormPuzzle.Game.Tetris
             KeepTopOnly = false;
         }
 
-        public int[] MakeOrderedTypes()
+        public readonly int[] MakeOrderedTypes()
         {
             var res = new int[BlockCells.NumTypes];
             for (var i = 0; i < res.Length; i++)
@@ -507,7 +508,7 @@ namespace DormPuzzle.Game.Tetris
             return res;
         }
 
-        private Map MakeMap()
+        private readonly Map MakeMap()
         {
             var map = new Map(Width, Height);
             if (Walls != null)
@@ -525,16 +526,16 @@ namespace DormPuzzle.Game.Tetris
             /// <summary>
             /// 按照优先级排过序的类型列表
             /// </summary>
-            private int[] _types;
+            private readonly int[] _types;
             /// <summary>
             /// 各个类型 Block 的数量，[0] 不使用
             /// </summary>
-            private int[] _blockNums;
-            private List<Solution> _slns;
-            private Map _map;
+            private readonly int[] _blockNums;
+            private readonly List<Solution> _slns;
+            private readonly Map _map;
             private Solution _tempSln;
             private int _remainBlocks;
-            private int _maxSolutions;
+            private readonly int _maxSolutions;
 
             public SolveDfs(SolveOptions options)
             {
@@ -544,7 +545,7 @@ namespace DormPuzzle.Game.Tetris
                 _maxSolutions = options.MaxSolutions;
                 _remainBlocks = options.TotalBlockNums;
                 _map = options.MakeMap();
-                _slns = new List<Solution>();
+                _slns = [];
                 _tempSln = new Solution();
             }
 
@@ -613,7 +614,7 @@ namespace DormPuzzle.Game.Tetris
         {
             var totalBlocks = options.TotalBlockNums;
             if (totalBlocks == 0)
-                return new List<Solution>();
+                return [];
 
             var map = options.MakeMap();
             var notWalls = map.NumNotWall;
@@ -665,7 +666,7 @@ namespace DormPuzzle.Game.Tetris
                     slns.RemoveRange(second, slns.Count - second);
                 }
             }
-            
+
             return slns;
         }
     }
