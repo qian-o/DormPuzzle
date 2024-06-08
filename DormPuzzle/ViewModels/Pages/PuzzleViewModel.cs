@@ -32,6 +32,9 @@ public partial class PuzzleViewModel(PuzzlePage puzzlePage) : UViewModel<PuzzleP
     [ObservableProperty]
     private SolutionBind? selectedSolution;
 
+    [ObservableProperty]
+    private bool isLoading;
+
     public BlockContainer BlockContainer => View.BlockContainer;
 
     [RelayCommand]
@@ -72,23 +75,31 @@ public partial class PuzzleViewModel(PuzzlePage puzzlePage) : UViewModel<PuzzleP
     }
 
     [RelayCommand]
-    private void Run()
+    private async Task Run()
     {
         SolveOptions solveOptions = new(BlockContainer.Columns, BlockContainer.Rows, Blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
         {
             Walls = [.. BlockContainer.DisabledLocations],
         };
 
-        Solutions = new(SolveOptions.Solve(solveOptions).Select((item, index) => { return new SolutionBind($"方案 {index}", item); }));
+        IsLoading = true;
+
+        await Task.Run(() =>
+        {
+            Solutions = new(SolveOptions.Solve(solveOptions).Select((item, index) => { return new SolutionBind($"方案 {index}", item); }));
+        });
+
         SelectedSolution = null;
 
         if (Solutions.Count != 0)
         {
-            int maxScore = Solutions.Max(solution => solution.Score);
+            int maxScore = Solutions.AsParallel().Max(solution => solution.Score);
 
-            Solutions = new(Solutions.Where(item => item.Score == maxScore));
+            Solutions = new(Solutions.AsParallel().Where(item => item.Score == maxScore));
             SelectedSolution = Solutions.First();
         }
+
+        IsLoading = false;
     }
 
     partial void OnRowsChanged(int value) => Clear();

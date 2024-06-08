@@ -18,6 +18,8 @@
 
         <ContentControl x:Key="Drop"
                         Tag="{Binding ElementName=DropCanvas}" />
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </views:UPage.Resources>
 
     <Grid>
@@ -155,5 +157,17 @@
                 Grid.ColumnSpan="2"
                 IsHitTestVisible="False"
                 d:Visibility="Collapsed" />
+
+        <Border Grid.ColumnSpan="2"
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                d:Visibility="Collapsed">
+            <Border.Background>
+                <SolidColorBrush Color="White"
+                                 Opacity="0.5" />
+            </Border.Background>
+            <ui:LoadingScreen HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Background="Transparent" />
+        </Border>
     </Grid>
 </views:UPage>
