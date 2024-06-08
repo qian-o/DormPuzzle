@@ -80,6 +80,7 @@ public partial class PuzzleViewModel(PuzzlePage puzzlePage) : UViewModel<PuzzleP
         SolveOptions solveOptions = new(BlockContainer.Columns, BlockContainer.Rows, Blocks.OrderBy(block => block.Order).Select(block => block.Count).ToArray())
         {
             Walls = [.. BlockContainer.DisabledLocations],
+            KeepTopOnly = true,
         };
 
         IsLoading = true;
@@ -89,13 +90,8 @@ public partial class PuzzleViewModel(PuzzlePage puzzlePage) : UViewModel<PuzzleP
             Solutions = new(SolveOptions.Solve(solveOptions).Select((item, index) => { return new SolutionBind($"方案 {index}", item); }));
         });
 
-        SelectedSolution = null;
-
-        if (Solutions.Count != 0)
+        if (Solutions.Count > 0)
         {
-            int maxScore = Solutions.AsParallel().Max(solution => solution.Score);
-
-            Solutions = new(Solutions.AsParallel().Where(item => item.Score == maxScore));
             SelectedSolution = Solutions.First();
         }
 
