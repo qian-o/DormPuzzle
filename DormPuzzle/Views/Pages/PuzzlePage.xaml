@@ -158,16 +158,14 @@
                 IsHitTestVisible="False"
                 d:Visibility="Collapsed" />
 
-        <Border Grid.ColumnSpan="2"
-                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                d:Visibility="Collapsed">
-            <Border.Background>
-                <SolidColorBrush Color="White"
-                                 Opacity="0.5" />
-            </Border.Background>
+        <ui:Card Grid.ColumnSpan="2"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                 d:Visibility="Collapsed">
             <ui:LoadingScreen HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               Background="Transparent" />
-        </Border>
+        </ui:Card>
     </Grid>
 </views:UPage>
