@@ -87,7 +87,7 @@ public partial class PuzzleViewModel(PuzzlePage puzzlePage) : UViewModel<PuzzleP
 
         await Task.Run(() =>
         {
-            Solutions = new(SolveOptions.Solve(solveOptions).Select((item, index) => { return new SolutionBind($"方案 {index}", item); }));
+            Solutions = new(SolveOptions.Solve(solveOptions).Take(50).Select((item, index) => { return new SolutionBind($"方案 {index}", item); }));
         });
 
         if (Solutions.Count > 0)
