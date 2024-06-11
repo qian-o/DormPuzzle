@@ -14,7 +14,7 @@ public abstract class Block : PolygonContainer
     protected Location[] _locations = [];
     protected Location[] _orderLocations = [];
     protected Brush _fill;
-    private int count = 1;
+    private int count = 0;
 
     protected Block(int order, int rows, int columns, Brush fill)
     {
