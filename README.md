@@ -20,3 +20,10 @@ Tips: 模拟完成后，会自动选择最佳方案，也可以在下拉列表�
 ## 4. 程序截图
 ![2](./Assets/2.png)
 ![3](./Assets/3.png)
+
+## 5. 作者
+<a href="https://github.com/qian-o/DormPuzzle/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=qian-o/DormPuzzle" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
