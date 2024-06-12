@@ -2,8 +2,9 @@ name: .NET Core Desktop
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
 
@@ -16,9 +17,9 @@ jobs:
     runs-on: windows-latest
     
     env:
-      Solution_Name: DormPuzzle.sln
-      Build_Output: ${{ github.workspace }}\DormPuzzle_${{ matrix.configuration }}
-      Zip_Output: ${{ github.workspace }}\DormPuzzle_${{ matrix.configuration }}.zip
+      Project_Name: DormPuzzle\DormPuzzle.csproj
+      Publish_Name: Publish\DormPuzzle.zip
+      Build_Output: Build\DormPuzzle\
 
     steps:
     - name: Checkout
@@ -32,7 +33,7 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    # Add MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
@@ -40,26 +41,20 @@ jobs:
     - name: Execute unit tests
       run: dotnet test
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-
     # Build the application
     - name: Build the application
-      run: msbuild $env:Solution_Name /t:Build /p:Configuration=$env:Configuration /p:OutputPath=$env:Build_Output
+      run: msbuild $env:Project_Name /t:Build /p:Configuration=$env:Configuration /p:OutputPath=$env:Build_Output
       env:
         Configuration: ${{ matrix.configuration }}
 
     # Zip the build output
     - name: Zip the build output
-      run: 7z a -tzip $env:Zip_Output $env:Build_Output
+      run: 7z a -tzip $env:Publish_Name $env:Build_Output
 
     # Release the build output
     - name: Release
       uses: softprops/action-gh-release@v2.0.5
       with:
-        body: ${{ github.ref }}
         draft: true
-        files: $env:Zip_Output
+        files: |
+          ./Publish/*.zip
