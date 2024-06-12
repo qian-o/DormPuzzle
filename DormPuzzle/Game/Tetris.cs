@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DormPuzzle.Models;
 
@@ -27,10 +28,10 @@ namespace DormPuzzle.Game.Tetris
         public int NumCells { get; }
         public bool Has { get; }
 
-        [System.Runtime.CompilerServices.InlineArray(3 * 3)]
+        [InlineArray(3 * 3)]
         private struct CellsArray
         {
-            private bool v;
+            public bool V;
         }
 
         private readonly CellsArray _cellsArray;
@@ -250,7 +251,7 @@ namespace DormPuzzle.Game.Tetris
         {
             var res = new Solution
             {
-                Placements = Placements.ToList(),
+                Placements = [.. Placements],
                 Score = Score
             };
 
