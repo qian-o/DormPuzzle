@@ -18,8 +18,8 @@ jobs:
     
     env:
       Project_Name: DormPuzzle\DormPuzzle.csproj
-      Publish_Name: Publish\DormPuzzle.zip
-      Build_Output: Build\DormPuzzle\
+      Build_Path: ${{ github.workspace }}\Build\DormPuzzle
+      Publish_Path: ${{ github.workspace }}\Publish
 
     steps:
     - name: Checkout
@@ -43,16 +43,16 @@ jobs:
 
     # Build the application
     - name: Build the application
-      run: msbuild $env:Project_Name /t:Build /p:Configuration=$env:Configuration /p:OutputPath=$env:Build_Output
+      run: msbuild $env:Project_Name /t:Build /p:Configuration=$env:Configuration /p:OutputPath=$env:Build_Path
       env:
         Configuration: ${{ matrix.configuration }}
 
     # Zip the build output
     - name: Zip the build output
-      run: 7z a -tzip $env:Publish_Name $env:Build_Output
+      run: 7z a -tzip $env:Publish_Path\DormPuzzle.zip $env:Build_Path
 
-    # Release the build output
-    - name: Release
+    # Publish the build output
+    - name: Publish the build output
       uses: softprops/action-gh-release@v2.0.5
       with:
         draft: true
