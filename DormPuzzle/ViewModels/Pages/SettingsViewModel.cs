@@ -40,6 +40,6 @@ public partial class SettingsViewModel(SettingsPage view) : UViewModel<SettingsP
 
     private static string GetAssemblyVersion()
     {
-        return Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
+        return Assembly.GetExecutingAssembly().GetName().Version?.ToString(fieldCount: 3) ?? string.Empty;
     }
 }
